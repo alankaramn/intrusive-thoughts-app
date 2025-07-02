@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Thought Dissolution - Inner Peace</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="container">
+        <div class="header-section" id="headerSection">
+            <h1>Release Your Thoughts</h1>
+            <p class="subtitle">Write it down, watch it dissolve, find your peace</p>
+        </div>
+        
+        <div class="content-section" id="contentSection">
+            <textarea id="thoughtBox" placeholder="Write your thoughts here... let them flow freely, then let them go..."></textarea>
+            <button id="releaseBtn" onclick="releaseThought()">Intrusive Thoughts Be Gone!</button>
+        </div>
+        
+        <div class="particles-container" id="particles"></div>
+        <canvas id="sparkleCanvas"></canvas>
+    </div>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #f7f3f0 0%, #e8ddd4 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 3s ease;
+        }
+        
+        body.peaceful {
+            background: linear-gradient(135deg, #f0f4f0 0%, #e1e9e1 100%);
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #d4c5b9;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            text-align: center;
+            width: 600px;
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .header-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            transition: opacity 0.8s ease;
+        }
+        
+        .content-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            transition: opacity 0.8s ease;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #6b5b73;
+            font-size: 2.5em;
+            font-weight: 300;
+            margin: 0;
+        }
+        
+        .subtitle {
+            color: #8a7c8c;
+            font-style: italic;
+            font-size: 1.1em;
+            margin: 0;
+        }
+        
+        #thoughtBox {
+            width: 100%;
+            height: 120px;
+            padding: 20px;
+            border: 2px solid #d4c5b9;
+            border-radius: 15px;
+            font-size: 16px;
+            font-family: 'Georgia', serif;
+            resize: vertical;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            color: #4a4a4a;
+            line-height: 1.6;
+        }
+        
+        #thoughtBox::placeholder {
+            color: #a0a0a0;
+        }
+        
+        #thoughtBox:focus {
+            border-color: #9d8189;
+            box-shadow: 0 0 15px rgba(157, 129, 137, 0.2);
+            transform: scale(1.02);
+        }
+        
+        #thoughtBox.chaotic {
+            border-color: #d4958a;
+            background: rgba(255, 255, 255, 0.6);
+            animation: subtle-shake 0.1s ease-in-out infinite;
+        }
+        
+        @keyframes subtle-shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-1px); }
+            75% { transform: translateX(1px); }
+        }
+        
+        #releaseBtn {
+            padding: 15px 40px;
+            font-size: 18px;
+            background: linear-gradient(45deg, #9d8189, #b8a5aa);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(157, 129, 137, 0.3);
+        }
+        
+        #releaseBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(157, 129, 137, 0.4);
+            background: linear-gradient(45deg, #b8a5aa, #c5b4b8);
+        }
+        
+        .particles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #a3c4a3;
+            border-radius: 50%;
+            opacity: 0;
+            animation: float-away 3s ease-out forwards;
+        }
+        
+        @keyframes float-away {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) scale(0);
+            }
+        }
+        
+        #sparkleCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 15;
+        }
+        
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Victory State Styles */
+        .victory-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        
+        .victory-container.show {
+            opacity: 1;
+        }
+        
+        .victory-title {
+            color: #4a5568;
+            font-size: 2.2em;
+            font-weight: 300;
+            margin: 0;
+        }
+        
+        .victory-gif {
+            width: 280px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .victory-text {
+            color: #718096;
+            font-size: 1.3em;
+            font-style: italic;
+            margin: 0;
+        }
+        
+        .victory-button {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #a8edea, #fed6e3);
+            color: #4a5568;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Georgia', serif;
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(168, 237, 234, 0.4);
+        }
+        
+        .victory-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(168, 237, 234, 0.6);
+        }
+    </style>
+    
+    <script>
+        let isReleasing = false;
+        
+        // Add chaos effect when typing
+        document.getElementById('thoughtBox').addEventListener('input', function() {
+            if (this.value.length > 0 && !isReleasing) {
+                this.classList.add('chaotic');
+            } else if (!isReleasing) {
+                this.classList.remove('chaotic');
+            }
+        });
+        
+        function createSparkles() {
+            const canvas = document.getElementById('sparkleCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            const sparkles = [];
+            
+            for (let i = 0; i < 50; i++) {
+                sparkles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 3 + 1,
+                    speedX: (Math.random() - 0.5) * 2,
+                    speedY: Math.random() * -3 - 1,
+                    opacity: 1,
+                    decay: Math.random() * 0.02 + 0.01
+                });
+            }
+            
+            function animateSparkles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                sparkles.forEach((sparkle, index) => {
+                    sparkle.x += sparkle.speedX;
+                    sparkle.y += sparkle.speedY;
+                    sparkle.opacity -= sparkle.decay;
+                    
+                    if (sparkle.opacity <= 0) {
+                        sparkles.splice(index, 1);
+                        return;
+                    }
+                    
+                    ctx.save();
+                    ctx.globalAlpha = sparkle.opacity;
+                    ctx.fillStyle = '#a3c4a3';
+                    ctx.shadowColor = '#a3c4a3';
+                    ctx.shadowBlur = 10;
+                    
+                    ctx.beginPath();
+                    ctx.arc(sparkle.x, sparkle.y, sparkle.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(sparkle.x, sparkle.y, sparkle.size * 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.restore();
+                });
+                
+                if (sparkles.length > 0) {
+                    requestAnimationFrame(animateSparkles);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            
+            animateSparkles();
+        }
+        
+        function createFloatingParticles() {
+            const container = document.getElementById('particles');
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.backgroundColor = `hsl(${120 + Math.random() * 30}, 35%, 65%)`;
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 3000);
+            }
+        }
+        
+        function playWhooshSound() {
+            const whooshDiv = document.createElement('div');
+            whooshDiv.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle, transparent 0%, rgba(163, 196, 163, 0.2) 70%);
+                pointer-events: none;
+                z-index: 20;
+                animation: whoosh-wave 1s ease-out forwards;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes whoosh-wave {
+                    0% { opacity: 0; transform: scale(0.5); }
+                    50% { opacity: 1; transform: scale(1.2); }
+                    100% { opacity: 0; transform: scale(2); }
+                }
+            `;
+            document.head.appendChild(style);
+            document.body.appendChild(whooshDiv);
+            
+            setTimeout(() => {
+                whooshDiv.remove();
+                style.remove();
+            }, 1000);
+        }
+        
+        function releaseThought() {
+            if (isReleasing) return;
+            
+            const thoughtBox = document.getElementById('thoughtBox');
+            
+            if (thoughtBox.value.trim() === '') {
+                thoughtBox.placeholder = "Write something first, then let it go...";
+                thoughtBox.focus();
+                return;
+            }
+            
+            isReleasing = true;
+            
+            // Remove chaos
+            thoughtBox.classList.remove('chaotic');
+            
+            // Start effects immediately
+            playWhooshSound();
+            createSparkles();
+            createFloatingParticles();
+            
+            // Hide everything at once
+            document.getElementById('headerSection').classList.add('hidden');
+            document.getElementById('contentSection').classList.add('hidden');
+            
+            // Change background
+            setTimeout(() => {
+                document.body.classList.add('peaceful');
+            }, 500);
+            
+            // Show victory content perfectly centered
+            setTimeout(() => {
+                const container = document.querySelector('.container');
+                container.innerHTML = `
+                    <div class="victory-container show">
+                        <h2 class="victory-title">Your mind is clear! ✨</h2>
+                        <img src="https://tenor.com/en-GB/view/graduate-legally-blonde-we-did-it-smile-gif-17216689.gif" 
+                             alt="We did it!" 
+                             class="victory-gif">
+                        <p class="victory-text">We conquered those thoughts together!</p>
+                        <button onclick="resetApp()" class="victory-button">Ready for round two?</button>
+                    </div>
+                    <div class="particles-container" id="particles"></div>
+                    <canvas id="sparkleCanvas"></canvas>
+                `;
+            }, 1000);
+            
+            // Auto reset after 8 seconds
+            setTimeout(() => {
+                resetApp();
+            }, 9000);
+        }
+        
+        function resetApp() {
+            const container = document.querySelector('.container');
+            
+            // Restore original layout
+            container.innerHTML = `
+                <div class="header-section" id="headerSection">
+                    <h1>Release Your Thoughts</h1>
+                    <p class="subtitle">Write it down, watch it dissolve, find your peace</p>
+                </div>
+                
+                <div class="content-section" id="contentSection">
+                    <textarea id="thoughtBox" placeholder="Write your thoughts here... let them flow freely, then let them go..."></textarea>
+                    <button id="releaseBtn" onclick="releaseThought()">Intrusive Thoughts Be Gone!</button>
+                </div>
+                
+                <div class="particles-container" id="particles"></div>
+                <canvas id="sparkleCanvas"></canvas>
+            `;
+            
+            // Re-add event listener for chaos effect
+            document.getElementById('thoughtBox').addEventListener('input', function() {
+                if (this.value.length > 0 && !isReleasing) {
+                    this.classList.add('chaotic');
+                } else if (!isReleasing) {
+                    this.classList.remove('chaotic');
+                }
+            });
+            
+            // Reset states
+            document.body.classList.remove('peaceful');
+            isReleasing = false;
+            
+            // Focus on text area
+            setTimeout(() => {
+                document.getElementById('thoughtBox').focus();
+            }, 100);
+        }
+        
+        // Enter key support
+        document.addEventListener('keydown', function(e) {
+            const thoughtBox = document.getElementById('thoughtBox');
+            if (thoughtBox && e.ctrlKey && e.key === 'Enter') {
+                releaseThought();
+            }
+        });
+    </script>
+</body>
+</html>
